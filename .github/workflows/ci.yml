@@ -1,6 +1,7 @@
 # FASE 5: Pipeline de Integración Continua (CI/CD)
 # Archivo: .github/workflows/ci.yml
 # Descripción: Ejecuta automáticamente pruebas en cada commit
+# Actualizado: 2026-02-03 - Corregido forceExit para Jest
 
 name: CI/CD Pipeline - Pruebas de Software
 
