@@ -1,0 +1,36 @@
+{
+  "name": "backend-proyecto",
+  "version": "1.0.0",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "nodemon src/server.js",
+    "test": "jest --coverage",
+    "test:unit": "jest tests/unit --coverage",
+    "test:integration": "jest tests/integration --coverage --detectOpenHandles",
+    "test:watch": "jest --watch",
+    "lint": "npx eslint src/",
+    "lint:fix": "npx eslint src/ --fix",
+    "security-check": "npm audit --audit-level=moderate",
+    "k6:load": "$HOME/go/bin/k6 run k6-tests/load-test.js",
+    "k6:stress": "$HOME/go/bin/k6 run k6-tests/stress-test.js",
+    "k6:spike": "$HOME/go/bin/k6 run k6-tests/spike-test.js"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "dotenv": "^16.0.3",
+    "express": "^4.18.2",
+    "jsonwebtoken": "^9.0.0",
+    "mongoose": "^7.3.1"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.39.2",
+    "@types/jest": "^30.0.0",
+    "eslint": "^9.39.2",
+    "eslint-plugin-security": "^3.0.1",
+    "jest": "^30.2.0",
+    "mongodb-memory-server": "^11.0.1",
+    "nodemon": "^3.0.1",
+    "supertest": "^7.2.2"
+  }
+}

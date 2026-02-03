@@ -1,0 +1,513 @@
+{
+  "info": {
+    "_postman_id": "reservas-api-tests",
+    "name": "FASE 2 - Pruebas Funcionales API Reservas",
+    "description": "Colección de pruebas funcionales para la API de gestión de reservas. Incluye pruebas de autenticación, validación y seguridad.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3000",
+      "type": "string"
+    },
+    {
+      "key": "authToken",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "testEmail",
+      "value": "testuser@pruebas.com",
+      "type": "string"
+    },
+    {
+      "key": "testPassword",
+      "value": "TestPassword123",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "01. Autenticación",
+      "item": [
+        {
+          "name": "CP-01: Registro de usuario válido",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('CP-01: Registro exitoso - Status 201', function() {",
+                  "    pm.response.to.have.status(201);",
+                  "});",
+                  "",
+                  "pm.test('CP-01: Mensaje de confirmación correcto', function() {",
+                  "    const response = pm.response.json();",
+                  "    pm.expect(response.msg).to.eql('Usuario creado');",
+                  "});",
+                  "",
+                  "pm.test('CP-01: Tiempo de respuesta < 2000ms', function() {",
+                  "    pm.expect(pm.response.responseTime).to.be.below(2000);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "// Generar email único para evitar duplicados",
+                  "const timestamp = Date.now();",
+                  "pm.collectionVariables.set('testEmail', `test_${timestamp}@pruebas.com`);"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"email\": \"{{testEmail}}\",\n    \"password\": \"{{testPassword}}\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/register",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "register"]
+            }
+          }
+        },
+        {
+          "name": "CP-02: Registro de usuario duplicado",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('CP-02: Rechaza duplicado - Status 400', function() {",
+                  "    pm.response.to.have.status(400);",
+                  "});",
+                  "",
+                  "pm.test('CP-02: Mensaje de error correcto', function() {",
+                  "    const response = pm.response.json();",
+                  "    pm.expect(response.error).to.eql('Ya existe el usuario');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"email\": \"{{testEmail}}\",\n    \"password\": \"{{testPassword}}\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/register",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "register"]
+            }
+          }
+        },
+        {
+          "name": "CP-03: Login con credenciales válidas",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('CP-03: Login exitoso - Status 200', function() {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('CP-03: Token JWT recibido', function() {",
+                  "    const response = pm.response.json();",
+                  "    pm.expect(response).to.have.property('token');",
+                  "    pm.expect(response.token).to.be.a('string');",
+                  "    pm.expect(response.token.length).to.be.above(10);",
+                  "    ",
+                  "    // Guardar token para siguientes requests",
+                  "    pm.collectionVariables.set('authToken', response.token);",
+                  "});",
+                  "",
+                  "pm.test('CP-03: Tiempo de respuesta < 1500ms', function() {",
+                  "    pm.expect(pm.response.responseTime).to.be.below(1500);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"email\": \"{{testEmail}}\",\n    \"password\": \"{{testPassword}}\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "login"]
+            }
+          }
+        },
+        {
+          "name": "CP-04: Login con contraseña incorrecta",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('CP-04: Rechaza contraseña incorrecta - Status 400', function() {",
+                  "    pm.response.to.have.status(400);",
+                  "});",
+                  "",
+                  "pm.test('CP-04: Mensaje de error correcto', function() {",
+                  "    const response = pm.response.json();",
+                  "    pm.expect(response.error).to.eql('Credenciales inválidas');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"email\": \"{{testEmail}}\",\n    \"password\": \"WrongPassword123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "login"]
+            }
+          }
+        },
+        {
+          "name": "CP-05: Login con usuario inexistente",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('CP-05: Rechaza usuario inexistente - Status 400', function() {",
+                  "    pm.response.to.have.status(400);",
+                  "});",
+                  "",
+                  "pm.test('CP-05: Mensaje de error genérico (seguridad)', function() {",
+                  "    const response = pm.response.json();",
+                  "    pm.expect(response.error).to.eql('Credenciales inválidas');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"email\": \"noexiste@pruebas.com\",\n    \"password\": \"cualquierpassword\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "login"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "02. Reservas",
+      "item": [
+        {
+          "name": "CP-06: Crear reserva válida con autenticación",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('CP-06: Reserva creada - Status 201', function() {",
+                  "    pm.response.to.have.status(201);",
+                  "});",
+                  "",
+                  "pm.test('CP-06: Mensaje de confirmación', function() {",
+                  "    const response = pm.response.json();",
+                  "    pm.expect(response.msg).to.eql('Reserva creada');",
+                  "});",
+                  "",
+                  "pm.test('CP-06: Tiempo de respuesta < 1000ms', function() {",
+                  "    pm.expect(pm.response.responseTime).to.be.below(1000);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"fecha\": \"2024-01-15\",\n    \"hora\": \"10:00\",\n    \"sala\": \"Sala A\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/reservas",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "reservas"]
+            }
+          }
+        },
+        {
+          "name": "CP-07: Crear reserva sin token (401)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('CP-07: Rechaza sin autenticación - Status 401', function() {",
+                  "    pm.response.to.have.status(401);",
+                  "});",
+                  "",
+                  "pm.test('CP-07: Mensaje de acceso denegado', function() {",
+                  "    const response = pm.response.json();",
+                  "    pm.expect(response.error).to.eql('Acceso denegado');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"fecha\": \"2024-01-15\",\n    \"hora\": \"10:00\",\n    \"sala\": \"Sala B\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/reservas",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "reservas"]
+            }
+          }
+        },
+        {
+          "name": "CP-08: Crear reserva con token inválido (400)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('CP-08: Rechaza token inválido - Status 400', function() {",
+                  "    pm.response.to.have.status(400);",
+                  "});",
+                  "",
+                  "pm.test('CP-08: Mensaje de token inválido', function() {",
+                  "    const response = pm.response.json();",
+                  "    pm.expect(response.error).to.eql('Token inválido');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer invalid.token.here"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"fecha\": \"2024-01-15\",\n    \"hora\": \"10:00\",\n    \"sala\": \"Sala C\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/reservas",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "reservas"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "03. Pruebas de Seguridad",
+      "item": [
+        {
+          "name": "SEC-01: SQL Injection en login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('SEC-01: No vulnerable a SQL Injection', function() {",
+                  "    // No debe permitir bypass de autenticación",
+                  "    pm.response.to.have.status(400);",
+                  "});",
+                  "",
+                  "pm.test('SEC-01: No expone información sensible', function() {",
+                  "    const responseText = pm.response.text();",
+                  "    pm.expect(responseText).to.not.include('SELECT');",
+                  "    pm.expect(responseText).to.not.include('FROM');",
+                  "    pm.expect(responseText).to.not.include('WHERE');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"email\": \"' OR '1'='1\",\n    \"password\": \"' OR '1'='1\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "login"]
+            }
+          }
+        },
+        {
+          "name": "SEC-02: NoSQL Injection en login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('SEC-02: No vulnerable a NoSQL Injection', function() {",
+                  "    // No debe permitir bypass con operadores MongoDB",
+                  "    pm.response.to.have.status(400);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"email\": {\"$gt\": \"\"},\n    \"password\": {\"$gt\": \"\"}\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "login"]
+            }
+          }
+        },
+        {
+          "name": "SEC-03: XSS en registro",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('SEC-03: Maneja entrada maliciosa XSS', function() {",
+                  "    // Debe procesar sin ejecutar scripts",
+                  "    const status = pm.response.code;",
+                  "    pm.expect(status).to.be.oneOf([201, 400, 500]);",
+                  "});",
+                  "",
+                  "pm.test('SEC-03: No refleja scripts en respuesta', function() {",
+                  "    const responseText = pm.response.text();",
+                  "    pm.expect(responseText).to.not.include('<script>');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"email\": \"<script>alert('xss')</script>@test.com\",\n    \"password\": \"password123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/register",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "register"]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

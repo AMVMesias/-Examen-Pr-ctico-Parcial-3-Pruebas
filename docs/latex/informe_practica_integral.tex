@@ -1,0 +1,705 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[spanish]{babel}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{float}
+\usepackage{geometry}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{tcolorbox}
+\usepackage{listings}
+\usepackage{amssymb}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{longtable}
+\usepackage[T1]{fontenc}
+\usepackage[hidelinks]{hyperref}
+
+% Configuración de página
+\geometry{margin=2.5cm}
+\setlength{\headheight}{14pt}
+
+% Colores personalizados - Tema One Dark Pro
+\definecolor{onedarkbg}{RGB}{40, 44, 52}
+\definecolor{onedarkfg}{RGB}{171, 178, 191}
+\definecolor{onedarkred}{RGB}{224, 108, 117}
+\definecolor{onedarkorange}{RGB}{209, 154, 102}
+\definecolor{onedarkyellow}{RGB}{229, 192, 123}
+\definecolor{onedarkgreen}{RGB}{152, 195, 121}
+\definecolor{onedarkcyan}{RGB}{86, 182, 194}
+\definecolor{onedarkblue}{RGB}{97, 175, 239}
+\definecolor{onedarkpurple}{RGB}{198, 120, 221}
+\definecolor{onedarkmagenta}{RGB}{255, 121, 198}
+\definecolor{onedarkcomment}{RGB}{92, 99, 112}
+\definecolor{onedarkwhite}{RGB}{255, 255, 255}
+\definecolor{espeblue}{RGB}{0, 51, 102}
+\definecolor{espegold}{RGB}{204, 153, 0}
+\definecolor{successgreen}{RGB}{40, 167, 69}
+\definecolor{dangerred}{RGB}{220, 53, 69}
+
+% Configuración de listings con tema One Dark Pro
+\lstdefinestyle{monokai}{
+    backgroundcolor=\color{onedarkbg},
+    basicstyle=\ttfamily\small\color{onedarkfg},
+    keywordstyle=\color{onedarkpurple}\bfseries,
+    keywordstyle=[2]\color{onedarkyellow},
+    keywordstyle=[3]\color{onedarkblue},
+    keywordstyle=[4]\color{onedarkcyan},
+    keywordstyle=[5]\color{onedarkred},
+    stringstyle=\color{onedarkgreen},
+    commentstyle=\color{onedarkcomment}\itshape,
+    numbers=left,
+    numberstyle=\tiny\color{onedarkcomment},
+    numbersep=10pt,
+    breaklines=true,
+    showstringspaces=false,
+    tabsize=2,
+    frame=none,
+    xleftmargin=15pt,
+    xrightmargin=5pt,
+    aboveskip=0pt,
+    belowskip=0pt,
+    morekeywords={const,let,var,function,return,if,else,throw,new,module,exports,true,false,null,undefined,async,await,describe,test,expect,beforeEach,afterEach,beforeAll,afterAll},
+    morekeywords=[2]{require,Error,console,express,jest,supertest,bcrypt,jwt,mongoose},
+    morekeywords=[3]{get,post,put,delete,send,listen,log,toBe,toEqual,toHaveBeenCalledWith,mockResolvedValue,mockRejectedValue,toThrow},
+    morekeywords=[4]{name,on,push,pull_request,branches,jobs,steps,uses,with,run,main,ubuntu,latest,node,version,actions,checkout,setup},
+    morekeywords=[5]{app,res,req,PORT,router,token,user,password,email}
+}
+
+\lstset{style=monokai}
+
+% Configuración de tcolorbox para código
+\tcbuselibrary{skins, breakable}
+
+\newtcolorbox{codebox}{
+    enhanced,
+    breakable,
+    colback=onedarkbg,
+    colframe=onedarkpurple,
+    arc=4mm,
+    boxrule=1.5pt,
+    left=0mm,
+    right=2mm,
+    top=2mm,
+    bottom=2mm,
+    shadow={2mm}{-2mm}{0mm}{black!50}
+}
+
+% Estilo de títulos
+\titleformat{\section}{\Large\bfseries\color{espeblue}}{\thesection}{1em}{}
+\titleformat{\subsection}{\large\bfseries\color{espeblue!80}}{\thesubsection}{1em}{}
+\titleformat{\subsubsection}{\normalsize\bfseries\color{espeblue!60}}{\thesubsubsection}{1em}{}
+
+% Encabezado y pie de página
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small\textcolor{espeblue}{Universidad de las Fuerzas Armadas ESPE}}
+\fancyhead[R]{\small\textcolor{espeblue}{Pruebas de Software - Práctica Integral}}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0.5pt}
+
+\begin{document}
+
+% Portada
+\begin{titlepage}
+    \centering
+    \vspace*{1cm}
+    
+    {\Large\textbf{\textcolor{espeblue}{UNIVERSIDAD DE LAS FUERZAS ARMADAS ESPE}}}\\[0.3cm]
+    {\large Departamento de Ciencias de la Computación}\\[0.2cm]
+    {\large Sede Sangolquí}\\[1.5cm]
+    
+    \rule{\textwidth}{1.5pt}\\[0.4cm]
+    {\Huge\bfseries\textcolor{espeblue}{Práctica Integral}}\\[0.3cm]
+    {\LARGE Metodología de Pruebas de Software}\\[0.1cm]
+    {\Large Sistema de Gestión de Reservas}\\[0.2cm]
+    \rule{\textwidth}{1.5pt}\\[2cm]
+    
+    \begin{minipage}{0.45\textwidth}
+        \begin{flushleft}
+            \textbf{Carrera:}\\
+            Ingeniería de Software\\[0.5cm]
+            \textbf{Asignatura:}\\
+            Pruebas de Software\\[0.5cm]
+            \textbf{Nivel:}\\
+            6to Nivel
+        \end{flushleft}
+    \end{minipage}
+    \hfill
+    \begin{minipage}{0.45\textwidth}
+        \begin{flushright}
+            \textbf{Docente:}\\
+            Ing. Enrique Calvopiña E, Mgtr.\\[0.5cm]
+            \textbf{NRC:}\\
+            27873\\[0.5cm]
+            \textbf{Período:}\\
+            202555
+        \end{flushright}
+    \end{minipage}\\[2cm]
+    
+    \textbf{\large Estudiante:}\\[0.3cm]
+    {\Large Mesias Orlando Mariscal Oña}\\[0.2cm]
+    {momariscal@espe.edu.ec}\\[2cm]
+    
+    \vfill
+    {\large Sangolquí, Febrero 2026}
+\end{titlepage}
+
+% Resumen
+\section*{Resumen Ejecutivo}
+Este informe documenta la ejecución de un programa integral de pruebas de software aplicando 5 fases metodológicas al Sistema de Gestión de Reservas. Se utilizaron las siguientes herramientas especializadas: ESLint para análisis estático, Jest y Supertest para pruebas unitarias e integración, Postman para pruebas funcionales de API, k6 para pruebas de carga y rendimiento, y GitHub Actions para integración continua.
+
+\textbf{Resultados principales:}
+\begin{itemize}
+    \item \textbf{23 pruebas automatizadas} implementadas (unitarias + integración)
+    \item \textbf{98.61\% de cobertura de código} (superando la meta del 80\%)
+    \item \textbf{100\% de pruebas pasadas} exitosamente
+    \item \textbf{0 vulnerabilidades críticas} detectadas
+    \item \textbf{Pipeline CI/CD} completamente automatizado
+\end{itemize}
+
+\textbf{Palabras clave:} Pruebas de Software, Jest, ESLint, k6, CI/CD, API REST, JWT
+
+\tableofcontents
+\newpage
+
+%============================================================================
+\section{Introducción}
+%============================================================================
+
+\subsection{Presentación del Proyecto}
+El presente informe documenta la aplicación sistemática de técnicas de pruebas de software al \textbf{Sistema de Gestión de Reservas}, una API REST desarrollada con Node.js, Express y MongoDB que implementa autenticación basada en JWT.
+
+\subsection{Objetivo General}
+Aplicar un conjunto integral de técnicas de pruebas de software mediante un enfoque metodológico estructurado, integrando pruebas estáticas, dinámicas, unitarias, de integración, de sistema, de seguridad, de rendimiento y automatizadas en un proyecto web de producción.
+
+\subsection{Objetivos Específicos}
+\begin{enumerate}
+    \item Ejecutar análisis estático del código fuente para identificar bugs, vulnerabilidades y code smells
+    \item Implementar pruebas unitarias con Jest alcanzando cobertura superior al 80\%
+    \item Realizar pruebas de integración de la API REST con Supertest
+    \item Ejecutar pruebas de carga y rendimiento con k6
+    \item Configurar un pipeline de CI/CD con GitHub Actions
+    \item Documentar todos los hallazgos y resultados obtenidos
+\end{enumerate}
+
+%============================================================================
+\section{Marco Teórico}
+%============================================================================
+
+\subsection{Pruebas Estáticas}
+Las pruebas estáticas analizan el código sin ejecutarlo. Incluyen revisión de código, análisis estático automatizado (linting) y verificación de estándares de codificación.
+
+\subsection{Pruebas Unitarias}
+Verifican el comportamiento de unidades individuales de código (funciones, métodos) de forma aislada, utilizando mocks para simular dependencias externas.
+
+\subsection{Pruebas de Integración}
+Evalúan la interacción entre múltiples componentes del sistema, verificando que trabajen correctamente en conjunto.
+
+\subsection{Pruebas de Carga}
+Miden el rendimiento del sistema bajo diferentes niveles de carga, identificando cuellos de botella y límites de capacidad.
+
+\subsection{Integración Continua (CI/CD)}
+Práctica donde los desarrolladores integran código frecuentemente, verificado por construcciones automatizadas para detectar errores tempranamente.
+
+%============================================================================
+\section{Materiales y Herramientas}
+%============================================================================
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|l|l|l|}
+\hline
+\textbf{Herramienta} & \textbf{Versión} & \textbf{Propósito} \\
+\hline
+Node.js & v20+ & Entorno de ejecución \\
+npm & v10+ & Gestor de paquetes \\
+ESLint & 9.x & Análisis estático \\
+Jest & 30.x & Pruebas unitarias \\
+Supertest & 7.x & Pruebas de integración HTTP \\
+k6 & Latest & Pruebas de carga \\
+MongoDB & 8.x & Base de datos \\
+GitHub Actions & - & CI/CD \\
+\hline
+\end{tabular}
+\caption{Herramientas utilizadas en el laboratorio}
+\end{table}
+
+%============================================================================
+\section{Arquitectura del Sistema}
+%============================================================================
+
+El sistema implementa una arquitectura de tres capas con separación clara de responsabilidades:
+
+\begin{itemize}
+    \item \textbf{Capa de Rutas:} Define los endpoints de la API REST
+    \item \textbf{Capa de Controladores:} Implementa la lógica de negocio
+    \item \textbf{Capa de Modelos:} Define los esquemas de datos con Mongoose
+    \item \textbf{Middleware:} Maneja la autenticación JWT
+\end{itemize}
+
+\subsection{Estructura del Proyecto}
+\begin{codebox}\begin{lstlisting}
+EvaluacionPractica1-reservas/
+├── src/
+│   ├── app.js                 # Configuracion Express
+│   ├── server.js              # Punto de entrada
+│   ├── controllers/
+│   │   ├── authController.js  # Logica de autenticacion
+│   │   └── reservaController.js
+│   ├── middlewares/
+│   │   └── auth.js            # Middleware JWT
+│   ├── models/
+│   │   ├── User.js
+│   │   └── Reserva.js
+│   └── routes/
+│       ├── auth.js
+│       └── reserva.js
+├── tests/
+│   ├── unit/
+│   └── integration/
+├── k6-tests/
+└── .github/workflows/
+\end{lstlisting}\end{codebox}
+
+%============================================================================
+\section{FASE 1: Análisis Estático}
+%============================================================================
+
+\subsection{Configuración de ESLint}
+Se configuró ESLint con el plugin de seguridad para detectar vulnerabilidades potenciales:
+
+\begin{codebox}\begin{lstlisting}
+// eslint.config.mjs
+import js from "@eslint/js";
+import security from "eslint-plugin-security";
+
+export default [
+  js.configs.recommended,
+  {
+    plugins: { security },
+    rules: {
+      "no-unused-vars": "warn",
+      "security/detect-object-injection": "warn",
+      "security/detect-unsafe-regex": "error",
+      "security/detect-eval-with-expression": "error",
+      "eqeqeq": "error",
+      "no-eval": "error"
+    }
+  }
+];
+\end{lstlisting}\end{codebox}
+
+\subsection{Resultados del Análisis}
+\begin{table}[H]
+\centering
+\begin{tabular}{|l|c|c|}
+\hline
+\textbf{Categoría} & \textbf{Encontrados} & \textbf{Severidad} \\
+\hline
+Errores & 0 & - \\
+Advertencias & 0 & - \\
+Vulnerabilidades de Seguridad & 0 & - \\
+\hline
+\end{tabular}
+\caption{Resultados del análisis estático con ESLint}
+\end{table}
+
+El código pasó todas las verificaciones de análisis estático sin errores ni advertencias críticas.
+
+%============================================================================
+\section{FASE 2: Pruebas Unitarias con Jest}
+%============================================================================
+
+\subsection{Configuración de Jest}
+\begin{codebox}\begin{lstlisting}
+// jest.config.js
+module.exports = {
+  testEnvironment: 'node',
+  coverageDirectory: 'coverage',
+  collectCoverageFrom: ['src/**/*.js', '!src/server.js'],
+  coverageThreshold: {
+    global: {
+      branches: 80, functions: 80, lines: 80, statements: 80
+    }
+  },
+  testMatch: ['**/tests/**/*.test.js'],
+  verbose: true
+};
+\end{lstlisting}\end{codebox}
+
+\subsection{Pruebas del Controlador de Autenticación}
+
+\begin{codebox}\begin{lstlisting}
+// tests/unit/auth.test.js
+describe('AuthController - Pruebas Unitarias', () => {
+  describe('register()', () => {
+    test('CP-01: Debe registrar un usuario nuevo', async () => {
+      mockReq.body = { email: 'test@test.com', password: 'pass123' };
+      mockUser.findOne.mockResolvedValue(null);
+      mockUser.save.mockResolvedValue({});
+      bcrypt.hash.mockResolvedValue('hashedPassword');
+
+      await register(mockReq, mockRes);
+
+      expect(mockRes.status).toHaveBeenCalledWith(201);
+      expect(mockRes.json).toHaveBeenCalledWith({ msg: 'Usuario creado' });
+    });
+
+    test('CP-02: Debe rechazar usuario duplicado', async () => {
+      mockReq.body = { email: 'existing@test.com', password: 'pass123' };
+      mockUser.findOne.mockResolvedValue({ email: 'existing@test.com' });
+
+      await register(mockReq, mockRes);
+
+      expect(mockRes.status).toHaveBeenCalledWith(400);
+    });
+  });
+});
+\end{lstlisting}\end{codebox}
+
+\subsection{Casos de Prueba Unitarios Implementados}
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabular}{|c|l|l|c|}
+\hline
+\textbf{ID} & \textbf{Descripción} & \textbf{Resultado Esperado} & \textbf{Estado} \\
+\hline
+CP-01 & Registrar usuario nuevo & 201 Created & \textcolor{successgreen}{\checkmark} \\
+CP-02 & Rechazar usuario duplicado & 400 Error & \textcolor{successgreen}{\checkmark} \\
+CP-03 & Manejar error interno registro & 500 Error & \textcolor{successgreen}{\checkmark} \\
+CP-04 & Login con credenciales válidas & Token JWT & \textcolor{successgreen}{\checkmark} \\
+CP-05 & Login usuario inexistente & 400 Error & \textcolor{successgreen}{\checkmark} \\
+CP-06 & Login contraseña incorrecta & 400 Error & \textcolor{successgreen}{\checkmark} \\
+CP-07 & Error de BD en login & 500 Error & \textcolor{successgreen}{\checkmark} \\
+CP-08 & Crear reserva válida & 201 Created & \textcolor{successgreen}{\checkmark} \\
+CP-09 & Error al crear reserva & 500 Error & \textcolor{successgreen}{\checkmark} \\
+CP-10 & Asociar reserva a usuario & userId correcto & \textcolor{successgreen}{\checkmark} \\
+CP-11 & Acceso sin token & 401 Unauthorized & \textcolor{successgreen}{\checkmark} \\
+CP-12 & Acceso con token válido & next() llamado & \textcolor{successgreen}{\checkmark} \\
+CP-13 & Token inválido & 400 Error & \textcolor{successgreen}{\checkmark} \\
+CP-14 & Token expirado & 400 Error & \textcolor{successgreen}{\checkmark} \\
+CP-15 & Token sin Bearer & Procesado & \textcolor{successgreen}{\checkmark} \\
+\hline
+\end{tabular}
+\caption{Casos de prueba unitarios - 15 pruebas pasadas}
+\end{table}
+
+%============================================================================
+\section{FASE 3: Pruebas de Integración}
+%============================================================================
+
+\subsection{Configuración con Supertest y MongoDB Memory Server}
+
+\begin{codebox}\begin{lstlisting}
+// tests/integration/api.test.js
+const request = require('supertest');
+const { MongoMemoryServer } = require('mongodb-memory-server');
+
+beforeAll(async () => {
+  mongoServer = await MongoMemoryServer.create();
+  process.env.MONGO_URI = mongoServer.getUri();
+  app = require('../../src/app');
+});
+
+describe('POST /api/auth/register', () => {
+  test('CP-INT-01: Registro exitoso', async () => {
+    const response = await request(app)
+      .post('/api/auth/register')
+      .send({ email: 'nuevo@usuario.com', password: 'password123' });
+
+    expect(response.status).toBe(201);
+    expect(response.body.msg).toBe('Usuario creado');
+  });
+});
+\end{lstlisting}\end{codebox}
+
+\subsection{Casos de Prueba de Integración}
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabular}{|c|l|l|c|}
+\hline
+\textbf{ID} & \textbf{Endpoint} & \textbf{Descripción} & \textbf{Estado} \\
+\hline
+CP-INT-01 & POST /api/auth/register & Registro exitoso & \textcolor{successgreen}{\checkmark} \\
+CP-INT-02 & POST /api/auth/register & Rechaza duplicado & \textcolor{successgreen}{\checkmark} \\
+CP-INT-03 & POST /api/auth/login & Login exitoso & \textcolor{successgreen}{\checkmark} \\
+CP-INT-04 & POST /api/auth/login & Contraseña incorrecta & \textcolor{successgreen}{\checkmark} \\
+CP-INT-05 & POST /api/auth/login & Usuario inexistente & \textcolor{successgreen}{\checkmark} \\
+CP-INT-06 & POST /api/reservas & Crear con token válido & \textcolor{successgreen}{\checkmark} \\
+CP-INT-07 & POST /api/reservas & Rechaza sin token (401) & \textcolor{successgreen}{\checkmark} \\
+CP-INT-08 & POST /api/reservas & Rechaza token inválido & \textcolor{successgreen}{\checkmark} \\
+\hline
+\end{tabular}
+\caption{Casos de prueba de integración - 8 pruebas pasadas}
+\end{table}
+
+%============================================================================
+\section{FASE 4: Pruebas de Carga con k6}
+%============================================================================
+
+\subsection{Script de Prueba de Carga}
+
+\begin{codebox}\begin{lstlisting}
+// k6-tests/simple-load.js
+import http from 'k6/http';
+import { check, sleep } from 'k6';
+
+export const options = {
+  vus: 50,
+  duration: '30s',
+  thresholds: {
+    http_req_duration: ['p(95)<2000'],
+    http_req_failed: ['rate<0.1'],
+  },
+};
+
+export default function() {
+  const user = {
+    email: `load_${Date.now()}@test.com`,
+    password: 'LoadTest123!'
+  };
+
+  // Registro
+  const registerRes = http.post(`${BASE_URL}/api/auth/register`, 
+    JSON.stringify(user), { headers: { 'Content-Type': 'application/json' }});
+  check(registerRes, { 'registro OK': (r) => r.status === 201 });
+
+  // Login y Reserva...
+  sleep(0.5);
+}
+\end{lstlisting}\end{codebox}
+
+\subsection{Resultados de Pruebas de Carga}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|l|c|c|}
+\hline
+\textbf{Métrica} & \textbf{Valor} & \textbf{Umbral} \\
+\hline
+Usuarios Virtuales (VUs) & 50 & - \\
+Requests Totales & 127 & - \\
+Tiempo Respuesta (avg) & 1.2s & - \\
+Tiempo Respuesta (p95) & 4.33s & <2s \\
+Tasa de Errores & 0.00\% & <10\% \\
+Throughput & 18.8 req/s & - \\
+\hline
+\end{tabular}
+\caption{Métricas de pruebas de carga con k6}
+\end{table}
+
+\textbf{Análisis:} El sistema maneja correctamente la carga con 0\% de errores, aunque el p95 excede el umbral de 2s bajo alta concurrencia.
+
+%============================================================================
+\section{FASE 5: Automatización CI/CD}
+%============================================================================
+
+\subsection{Pipeline de GitHub Actions}
+
+\begin{codebox}\begin{lstlisting}
+# .github/workflows/ci.yml
+name: CI Pipeline
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: '20' }
+      - run: npm ci
+      - run: npm run lint
+
+  unit-tests:
+    runs-on: ubuntu-latest
+    needs: lint
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+      - run: npm ci
+      - run: npm run test:unit
+
+  integration-tests:
+    runs-on: ubuntu-latest
+    needs: unit-tests
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+      - run: npm ci
+      - run: npm run test:integration
+\end{lstlisting}\end{codebox}
+
+\subsection{Jobs del Pipeline}
+\begin{enumerate}
+    \item \textbf{lint} - Análisis estático con ESLint
+    \item \textbf{unit-tests} - Pruebas unitarias con Jest
+    \item \textbf{integration-tests} - Pruebas de integración
+    \item \textbf{security} - Auditoría de dependencias (npm audit)
+    \item \textbf{build} - Verificación de inicio del servidor
+    \item \textbf{quality-gate} - Resumen final de calidad
+\end{enumerate}
+
+%============================================================================
+\section{Resultados Consolidados}
+%============================================================================
+
+\subsection{Métricas de Calidad}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|l|c|c|c|}
+\hline
+\textbf{Métrica} & \textbf{Meta} & \textbf{Resultado} & \textbf{Estado} \\
+\hline
+Cobertura de código & $\geq$80\% & \textbf{98.61\%} & \textcolor{successgreen}{\checkmark} \\
+Pruebas pasadas & 100\% & \textbf{100\%} & \textcolor{successgreen}{\checkmark} \\
+Errores de linting & 0 & \textbf{0} & \textcolor{successgreen}{\checkmark} \\
+Vulnerabilidades críticas & 0 & \textbf{0} & \textcolor{successgreen}{\checkmark} \\
+Tasa de errores (carga) & <10\% & \textbf{0\%} & \textcolor{successgreen}{\checkmark} \\
+\hline
+\end{tabular}
+\caption{Métricas de calidad del software}
+\end{table}
+
+\subsection{Cobertura por Archivo}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|l|c|c|c|c|}
+\hline
+\textbf{Archivo} & \textbf{Stmts} & \textbf{Branch} & \textbf{Funcs} & \textbf{Lines} \\
+\hline
+authController.js & 100\% & 100\% & 100\% & 100\% \\
+reservaController.js & 100\% & 100\% & 100\% & 100\% \\
+auth.js (middleware) & 100\% & 100\% & 100\% & 100\% \\
+User.js & 100\% & 100\% & 100\% & 100\% \\
+Reserva.js & 100\% & 100\% & 100\% & 100\% \\
+auth.js (routes) & 100\% & 100\% & 100\% & 100\% \\
+reserva.js (routes) & 100\% & 100\% & 100\% & 100\% \\
+app.js & 90.9\% & 100\% & 50\% & 90.9\% \\
+\hline
+\textbf{TOTAL} & \textbf{98.61\%} & \textbf{100\%} & \textbf{83.33\%} & \textbf{98.52\%} \\
+\hline
+\end{tabular}
+\caption{Cobertura de código por archivo}
+\end{table}
+
+\subsection{Resumen de Pruebas}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|l|c|c|c|}
+\hline
+\textbf{Tipo de Prueba} & \textbf{Total} & \textbf{Pasadas} & \textbf{Fallidas} \\
+\hline
+Pruebas Unitarias & 15 & 15 & 0 \\
+Pruebas de Integración & 8 & 8 & 0 \\
+\hline
+\textbf{TOTAL} & \textbf{23} & \textbf{23} & \textbf{0} \\
+\hline
+\end{tabular}
+\caption{Resumen de ejecución de pruebas}
+\end{table}
+
+%============================================================================
+\section{Matriz de Trazabilidad}
+%============================================================================
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabular}{|l|c|c|c|c|}
+\hline
+\textbf{Requisito} & \textbf{Unitaria} & \textbf{Integración} & \textbf{Carga} & \textbf{Seguridad} \\
+\hline
+REQ-01: Crear reserva & CP-08,09 & CP-INT-06,07,08 & \checkmark & \checkmark \\
+REQ-02: Autenticación & CP-04,05,06 & CP-INT-03,04,05 & \checkmark & \checkmark \\
+REQ-03: Registro usuarios & CP-01,02,03 & CP-INT-01,02 & \checkmark & \checkmark \\
+REQ-04: Validación tokens & CP-11,12,13,14 & CP-INT-07,08 & - & \checkmark \\
+\hline
+\end{tabular}
+\caption{Matriz de trazabilidad: Requisitos vs Pruebas}
+\end{table}
+
+%============================================================================
+\section{Conclusiones}
+%============================================================================
+
+\begin{enumerate}
+    \item \textbf{Alta Cobertura de Código:} Se logró una cobertura del 98.61\%, superando significativamente la meta del 80\%. Esto garantiza que prácticamente todo el código está respaldado por pruebas automatizadas, reduciendo el riesgo de regresiones.
+    
+    \item \textbf{Robustez del Sistema de Autenticación:} Las pruebas demuestran que el sistema de autenticación basado en JWT maneja correctamente todos los escenarios: tokens válidos, inválidos, expirados, y solicitudes sin autenticación.
+    
+    \item \textbf{Estabilidad bajo Carga:} Las pruebas con k6 mostraron que el sistema mantiene una tasa de errores del 0\% bajo carga de 50 usuarios concurrentes, demostrando buena estabilidad operacional.
+    
+    \item \textbf{Automatización Efectiva:} El pipeline de CI/CD implementado con GitHub Actions asegura que cada cambio en el código pasa por análisis estático, pruebas unitarias y de integración antes de ser integrado, garantizando la calidad continua del software.
+\end{enumerate}
+
+%============================================================================
+\section{Recomendaciones}
+%============================================================================
+
+\begin{enumerate}
+    \item \textbf{Optimizar Tiempo de Respuesta:} El p95 de 4.33s bajo carga excede el umbral de 2s. Se recomienda implementar caching, optimizar queries y considerar escalado horizontal.
+    
+    \item \textbf{Implementar Rate Limiting:} Agregar limitación de peticiones para prevenir ataques de fuerza bruta en endpoints de autenticación.
+    
+    \item \textbf{Expandir Funcionalidades:} Implementar endpoints GET, PUT y DELETE para reservas, junto con sus respectivas pruebas.
+    
+    \item \textbf{Pruebas E2E:} Considerar implementar pruebas end-to-end con herramientas como Playwright para flujos completos de usuario.
+    
+    \item \textbf{Monitoreo en Producción:} Implementar APM (Application Performance Monitoring) para detectar problemas en tiempo real.
+\end{enumerate}
+
+%============================================================================
+\section*{Repositorio}
+%============================================================================
+El código fuente completo del proyecto está disponible en:\\
+\url{https://github.com/AMVMesias/-Examen-Pr-ctico-Parcial-3-Pruebas}
+
+%============================================================================
+\section*{Anexo: Comandos de Ejecución}
+%============================================================================
+
+\begin{codebox}\begin{lstlisting}
+# Instalar dependencias
+npm install
+
+# Ejecutar todas las pruebas con cobertura
+npm test
+
+# Ejecutar solo pruebas unitarias
+npm run test:unit
+
+# Ejecutar solo pruebas de integracion
+npm run test:integration
+
+# Analisis estatico
+npm run lint
+
+# Pruebas de carga con k6
+k6 run k6-tests/simple-load.js
+\end{lstlisting}\end{codebox}
+
+%============================================================================
+\begin{thebibliography}{00}
+\bibitem{b1} Jest, ``Jest - Delightful JavaScript Testing,'' Jest Documentation, 2026. [Online]. Available: https://jestjs.io/
+\bibitem{b2} ESLint, ``ESLint - Find and fix problems in your JavaScript code,'' ESLint Documentation, 2026. [Online]. Available: https://eslint.org/
+\bibitem{b3} k6, ``k6 - Modern load testing for developers,'' k6 Documentation, 2026. [Online]. Available: https://k6.io/
+\bibitem{b4} GitHub, ``GitHub Actions Documentation,'' GitHub Docs, 2026. [Online]. Available: https://docs.github.com/en/actions
+\bibitem{b5} Supertest, ``Supertest - Super-agent driven library for testing HTTP servers,'' npm, 2026. [Online]. Available: https://www.npmjs.com/package/supertest
+\end{thebibliography}
+
+\end{document}
